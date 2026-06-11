@@ -3,6 +3,12 @@ name: continuity-merge-guard
 # Source: joselunasrt8-creator/ContinuityOS-/actions/continuity-merge-guard
 # See VALIDATION.md for the adoption proof (Issue #1) and
 # LOAD_BEARING_READINESS.md for the @v0.1.0 version strategy (Issue #5).
+#
+# TEMPORARY (Issue #9 / Loop 4 — Required Check Failure Enforcement Proof):
+# `actor` is deliberately left empty below so the required `merge-guard`
+# job emits result: NULL (missing_fields: ["actor"]) and fails closed,
+# exercising the BLOCKED_NULL / required-check-failure path on this PR.
+# This change must NOT be merged to main — see NULL_ENFORCEMENT_PROOF.md.
 
 on:
   pull_request:
@@ -26,4 +32,4 @@ jobs:
           pr-number: ${{ github.event.pull_request.number }}
           head-sha: ${{ github.event.pull_request.head.sha }}
           base-sha: ${{ github.event.pull_request.base.sha }}
-          actor: ${{ github.event.pull_request.user.login }}
+          actor: ''
