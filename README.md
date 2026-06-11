@@ -79,3 +79,27 @@ See [`NULL_ENFORCEMENT_PROOF.md`](./NULL_ENFORCEMENT_PROOF.md) for the
 required-check failure enforcement proof (Issue #9: PR #9 drove the
 required `merge-guard` check to `result: NULL` / `conclusion: failure` and
 GitHub reported the PR as `blocked` — `BLOCKED_NULL_CONFIRMED`).
+
+## Validation loops 5-10
+
+See [`COMPREHENSION.md`](./COMPREHENSION.md) (Loop 5) for the
+external-stranger comprehension check: 6 questions, answerable from this
+README and one linked doc each, in 5 minutes —
+`COMPREHENSIBLE_IN_5_MINUTES`.
+
+See [`EXTERNAL_DEPENDENCY_PROOF.md`](./EXTERNAL_DEPENDENCY_PROOF.md)
+(Loop 6) for the formal external-dependency closure: this repo pins
+`@v0.1.0`, requires `merge-guard`, and has real PRs whose merge
+eligibility depended on its result — `EXTERNAL_DEPENDENCY_CONFIRMED`.
+
+See [`BREAK_GLASS.md`](./BREAK_GLASS.md) (Loop 7) for the governed
+override path used if `merge-guard` ever blocks a merge that cannot wait
+— `GOVERNED_OVERRIDE_DEFINED`.
+
+See [`VERSION_UPGRADE.md`](./VERSION_UPGRADE.md) (Loop 8) for the
+`@v0.1.0` → `@v0.1.1` upgrade readiness assessment —
+`VALIDATOR_CONTINUITY_PROVEN` (tag publication pending maintainer action).
+
+See [`RETENTION_SIGNAL.md`](./RETENTION_SIGNAL.md) (Loop 10) for the
+operator's retention feedback after living with `merge-guard` as a
+required check — `RETAIN`.
