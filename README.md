@@ -73,4 +73,9 @@ See [`LOAD_BEARING_READINESS.md`](./LOAD_BEARING_READINESS.md) for the
 load-bearing readiness assessment (Issue #5: canonical install path,
 `@v0.1.0` version strategy, adoption-friction status, and documented
 required-status-check configuration). Current classification:
-`LOAD-BEARING_READY`.
+`LOAD-BEARING_ACTIVE`.
+
+See [`NULL_ENFORCEMENT_PROOF.md`](./NULL_ENFORCEMENT_PROOF.md) for the
+required-check failure enforcement proof (Issue #9: PR #9 drove the
+required `merge-guard` check to `result: NULL` / `conclusion: failure` and
+GitHub reported the PR as `blocked` — `BLOCKED_NULL_CONFIRMED`).
