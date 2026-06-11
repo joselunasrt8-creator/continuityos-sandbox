@@ -201,19 +201,23 @@ LOAD-BEARING_READY
   ↓ (future issue: apply branch protection — explicitly out of scope here)
 
 LOAD-BEARING_ACTIVE
-  `continuity-merge-guard / merge-guard` is a required status check on
-  `main`. VALID → merge eligible. NULL → BLOCKED_NULL (merge blocked).
-  Missing/errored check → BLOCKED_UNKNOWN (merge blocked, covered for
-  free by GitHub's required-status-check semantics).
+  `merge-guard` is a required status check on `main`. VALID → merge
+  eligible. NULL → BLOCKED_NULL (merge blocked). Missing/errored check
+  → BLOCKED_UNKNOWN (merge blocked, covered for free by GitHub's
+  required-status-check semantics).
 ```
 
 ### Configuration to apply (documentation only — NOT applied by this issue)
 
 1. Repo Settings → Branches → branch protection rule for `main`.
 2. Enable **"Require status checks to pass before merging"**.
-3. Add required check: **`continuity-merge-guard / merge-guard`**
-   (job name `merge-guard` from `continuity-merge-guard.yml`, exactly as
-   it appears on a PR's check list).
+3. Add required check: **`merge-guard`** — this is the exact check-run
+   name GitHub reports for the `merge-guard` job in
+   `continuity-merge-guard.yml` (verified against PR #2's check runs:
+   `{"name": "merge-guard", "conclusion": "success"}`). The workflow file
+   name (`continuity-merge-guard`) is shown as grouping context in the UI
+   but is **not** part of the required-check name itself — select
+   `merge-guard`, not `continuity-merge-guard / merge-guard`.
 4. Do **not** enable "Include administrators" as a substitute for
    break-glass (per `DEPENDENCY_ASSESSMENT.md`) — that would silently
    reintroduce an ungoverned bypass and is excluded from this
