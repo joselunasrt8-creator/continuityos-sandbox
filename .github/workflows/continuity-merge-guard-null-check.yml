@@ -2,7 +2,8 @@ name: continuity-merge-guard-null-check
 # Exercise of the Merge Guard's fail-closed (NULL) path.
 # Calls the same action as continuity-merge-guard.yml but with an empty
 # `actor` input, so `result` is NULL and `missing_fields` includes "actor".
-# See VALIDATION.md for the adoption proof (Issue #1).
+# See VALIDATION.md for the adoption proof (Issue #1) and
+# LOAD_BEARING_READINESS.md for the @v0.1.0 version strategy (Issue #5).
 
 on:
   workflow_dispatch:
@@ -19,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: joselunasrt8-creator/ContinuityOS-/actions/continuity-merge-guard@main
+      - uses: joselunasrt8-creator/ContinuityOS-/actions/continuity-merge-guard@v0.1.0
         id: merge-guard
         continue-on-error: true
         with:
