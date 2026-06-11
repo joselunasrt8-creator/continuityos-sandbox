@@ -1,11 +1,14 @@
 name: continuity-merge-guard-null-check
-# Manually-triggered exercise of the Merge Guard's fail-closed (NULL) path.
+# Exercise of the Merge Guard's fail-closed (NULL) path.
 # Calls the same action as continuity-merge-guard.yml but with an empty
 # `actor` input, so `result` is NULL and `missing_fields` includes "actor".
 # See VALIDATION.md for the adoption proof (Issue #1).
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - claude/external-consumer-validation-pc81df
 
 permissions:
   contents: read
