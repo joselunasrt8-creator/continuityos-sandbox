@@ -60,14 +60,22 @@ on `main` at workflow-run time.
 @v0.1.0
 ```
 
-`v0.1.0` is a tag on `joselunasrt8-creator/ContinuityOS-` pointing at the
-`main` commit current as of this readiness pass
-(`83aac5a11104c6b2ef9c5ebdc23636f3f5b71d89`), which contains the v1 Merge
+`v0.1.0` is a tag on `joselunasrt8-creator/ContinuityOS-` pointing at
+`83aac5a11104c6b2ef9c5ebdc23636f3f5b71d89`, which contains the v1 Merge
 Guard implementation validated in Issue #1.
 
-> Tag publication is a maintainer action outside this session's tool
-> scope (no tag/release-creation capability available). The repo owner has
-> committed to publishing `v0.1.0` at this commit.
+**Resolved:** the `v0.1.0` tag has been published. `action.yml` and
+`check.mjs` at `v0.1.0` are byte-identical to the versions on `main` used
+during the Issue #1 validation, so pinning to `@v0.1.0` is a no-op for
+sandbox behavior. The sandbox workflows below now reference `@v0.1.0`.
+
+> Note: `v0.1.0` was cut one commit before the `mindshift-demo` README fix
+> (`c3d243f` on `ContinuityOS-`), so the action's *own* README at the
+> `v0.1.0` ref still shows the stale install path. This does not affect
+> the sandbox — the canonical install example in Section 3 of this
+> document is correct and is the reference sandbox consumers should use.
+> It is carried forward as a documentation-only item for a future
+> `v0.1.1` tag on `ContinuityOS-`.
 
 ### Benefits of `@v0.1.0` over `@main`
 
@@ -158,7 +166,7 @@ This repo's `.github/workflows/continuity-merge-guard.yml` and
 |---|---|---|---|
 | 1 | Trailing-dash source repo name (`ContinuityOS-`) easy to mistype | **Documented** | Cannot be renamed without breaking every existing `uses:` reference across the org; the canonical install snippet (Section 3) is the typo-safe copy/paste source of truth. Still Open as a structural naming risk, but mitigated by providing one canonical, copyable reference. |
 | 2 | Stale `mindshift-demo` README references | **Resolved** | Fixed in `ContinuityOS-/README.md` and `actions/continuity-merge-guard/README.md` (Section 1). No remaining `mindshift-demo` references in any Merge Guard install path. |
-| 3 | No version tag for stable pinning | **Documented** | `v0.1.0` strategy defined (Section 2); tag publication is the one remaining maintainer action outside this session's tooling. Sandbox workflows and canonical example already reference `@v0.1.0` in anticipation. |
+| 3 | No version tag for stable pinning | **Resolved** | `v0.1.0` is published on `ContinuityOS-` (Section 2). Sandbox workflows now reference `@v0.1.0`. |
 | 4 | NULL path requires a dedicated workflow trigger | **Documented** | Unchanged from Issue #1/#3 — real `pull_request` events always populate all five identity fields, so `continuity-merge-guard-null-check.yml` remains the only way to exercise the NULL/fail-closed path pre-merge. This is a property of GitHub's `pull_request` event payload, not something Merge Guard or this repo can fix; out of scope per Issue #5 non-goals (no validator semantics changes). |
 | 5 | Merge Guard not yet a required status check | **Documented** | This is the INFORMATIONAL → LOAD-BEARING_ACTIVE transition itself (Section 5). Explicitly out of scope for Issue #5 by design — documented, not applied. |
 | 6 | Break-glass unresolved | **Still Open** | No governed `BLOCKED_BREAK_GLASS_REQUIRED` mechanism exists in `ContinuityOS-` or this repo. Per Issue #5 non-goals, break-glass logic is not implemented here. Remains a tracked prerequisite for `LOAD-BEARING_ACTIVE`, not for `LOAD-BEARING_READY`. |
@@ -243,9 +251,8 @@ Justification against the issue's classification criteria:
   `mindshift-demo` references fixed (Section 1); the trailing-dash repo
   name and NULL-path friction are documented, not silently ignored
   (Section 4).
-- **Versioning strategy is clear** — `@v0.1.0` is the documented target,
-  with a defined migration path and consumer impact (Section 2). Tag
-  publication is the one remaining action, owned by the maintainer.
+- **Versioning strategy is clear and applied** — `@v0.1.0` is published
+  and the sandbox workflows are pinned to it (Section 2).
 - **Required-status-check setup is documented** — Section 5 documents the
   exact branch-protection configuration and resulting `VALID`/`BLOCKED_*`
   behavior, without applying it.
