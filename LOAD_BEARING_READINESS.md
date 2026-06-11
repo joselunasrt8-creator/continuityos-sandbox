@@ -201,19 +201,23 @@ LOAD-BEARING_READY
   ↓ (future issue: apply branch protection — explicitly out of scope here)
 
 LOAD-BEARING_ACTIVE
-  `continuity-merge-guard / merge-guard` is a required status check on
-  `main`. VALID → merge eligible. NULL → BLOCKED_NULL (merge blocked).
-  Missing/errored check → BLOCKED_UNKNOWN (merge blocked, covered for
-  free by GitHub's required-status-check semantics).
+  `merge-guard` is a required status check on `main`. VALID → merge
+  eligible. NULL → BLOCKED_NULL (merge blocked). Missing/errored check
+  → BLOCKED_UNKNOWN (merge blocked, covered for free by GitHub's
+  required-status-check semantics).
 ```
 
 ### Configuration to apply (documentation only — NOT applied by this issue)
 
 1. Repo Settings → Branches → branch protection rule for `main`.
 2. Enable **"Require status checks to pass before merging"**.
-3. Add required check: **`continuity-merge-guard / merge-guard`**
-   (job name `merge-guard` from `continuity-merge-guard.yml`, exactly as
-   it appears on a PR's check list).
+3. Add required check: **`merge-guard`** — this is the exact check-run
+   name GitHub reports for the `merge-guard` job in
+   `continuity-merge-guard.yml` (verified against PR #2's check runs:
+   `{"name": "merge-guard", "conclusion": "success"}`). The workflow file
+   name (`continuity-merge-guard`) is shown as grouping context in the UI
+   but is **not** part of the required-check name itself — select
+   `merge-guard`, not `continuity-merge-guard / merge-guard`.
 4. Do **not** enable "Include administrators" as a substitute for
    break-glass (per `DEPENDENCY_ASSESSMENT.md`) — that would silently
    reintroduce an ungoverned bypass and is excluded from this
@@ -232,15 +236,51 @@ explicit, separately-approved next step that crosses
 
 ---
 
+## 6. Activation Evidence (Issue #7)
+
+Branch protection on `main` has been configured (by the repo owner,
+outside this session's tooling) to require the `merge-guard` status
+check, exactly as specified in Section 5.
+
+[PR #8](https://github.com/joselunasrt8-creator/continuityos-sandbox/pull/8)
+is the activation-proof PR:
+
+- `merge-guard` ran on PR #8 and reported `result: VALID` /
+  `conclusion: success`
+  ([run](https://github.com/joselunasrt8-creator/continuityos-sandbox/actions/runs/27329660837/job/80738731739)).
+- The PR's checks panel shows `continuity-merge-guard / merge-guard` as
+  **Required** with **"All checks have passed — 1 successful check"**.
+
+This confirms the exact-name fix in Section 5 (`merge-guard`, not the
+slash form) resolves correctly: the configured required check matches the
+emitted check run, with no permanent-lockout failure mode.
+
+### Independent gate observed: required review
+
+PR #8's checks panel also shows **"Merging is blocked: At least 1
+approving review is required by reviewers with write access"** — a
+separate branch-protection rule (review requirement), not part of Merge
+Guard and not configured or proposed by Issue #7.
+
+This does not change the activation claim. `merge-guard` is a required
+check and has reported `success`; merge eligibility for PR #8 now depends
+on `merge-guard` (satisfied) **and** on the pre-existing review
+requirement (independent of Merge Guard, unaffected by this issue). The
+two gates are additive, not conflicting — Merge Guard's contribution to
+"mergeable" has been demonstrated.
+
+---
+
 ## Classification
 
 ```text
 INFORMATIONAL
-LOAD-BEARING_READY   <-- this assessment
+LOAD-BEARING_READY
+LOAD-BEARING_ACTIVE   <-- this assessment, per Section 6 evidence
 BLOCKED
 ```
 
-**Decision: `LOAD-BEARING_READY`**
+**Decision: `LOAD-BEARING_ACTIVE`**
 
 Justification against the issue's classification criteria:
 
@@ -253,12 +293,14 @@ Justification against the issue's classification criteria:
   (Section 4).
 - **Versioning strategy is clear and applied** — `@v0.1.0` is published
   and the sandbox workflows are pinned to it (Section 2).
-- **Required-status-check setup is documented** — Section 5 documents the
-  exact branch-protection configuration and resulting `VALID`/`BLOCKED_*`
-  behavior, without applying it.
+- **Required-status-check setup is documented and applied** — `main`'s
+  branch protection requires `merge-guard` (Section 5), and Section 6
+  records a real PR where it ran and reported `VALID`/`success` as a
+  required check.
 - **Unresolved blockers are identified and scoped** — break-glass (#6) and
   the trailing-dash name (#1) are explicitly carried forward as known,
-  scoped, non-blocking-for-readiness items.
+  scoped items, unaffected by activation.
 
-No branch protection, required status checks, or validator semantics were
-changed by this issue.
+Branch protection requiring `merge-guard` was applied by the repo owner
+(admin action, outside this session's tool scope) and verified against a
+real PR (#8) in Section 6. No validator semantics were changed.
