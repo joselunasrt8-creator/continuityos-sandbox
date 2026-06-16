@@ -3,12 +3,23 @@
 ## Classification
 
 ```
-DEPENDENCY_LOOP_CANDIDATE
+EXTERNAL_DEPENDENCY_LOOP_CLOSED
 ```
 
-This document advances to `EXTERNAL_DEPENDENCY_LOOP_CLOSED` after the required
-`merge-guard` check on this PR produces `result: VALID` and the proof artifact
-(`MERGE_GUARD_PROOF.json`) is observable in CI.
+### Proof artifact
+
+| Field | Value |
+|-------|-------|
+| Check run | https://github.com/joselunasrt8-creator/continuityos-sandbox/actions/runs/27588430806 |
+| Conclusion | `success` (merge-guard result: VALID) |
+| Artifact name | `MERGE_GUARD_PROOF` |
+| Artifact ID | `7655437395` |
+| Artifact digest | `sha256:7ad62cd503093d70ea6ab0a357b8c70874856a60f1dffcb3f1ebff0a29379be7` |
+| Run timestamp | `2026-06-16T01:44:26Z` |
+| Head SHA | `a968a4385009c02e31e61f09e54935dfe297a412` |
+
+The required `merge-guard` check ran on this PR, produced `result: VALID`, and
+uploaded `MERGE_GUARD_PROOF.json` as a CI artifact. The PR is now mergeable.
 
 ---
 
@@ -52,6 +63,7 @@ This repo is the external consumer.
 | 8 | `VERSION_UPGRADE.md` | `VALIDATOR_CONTINUITY_PROVEN` |
 | 9 | `NULL_ENFORCEMENT_PROOF.md` | `BLOCKED_NULL_CONFIRMED` |
 | 10 | `RETENTION_SIGNAL.md` | `RETAIN` |
+| **11** | **this document** | **`EXTERNAL_DEPENDENCY_LOOP_CLOSED`** |
 
 ---
 
@@ -71,6 +83,10 @@ This loop proves the remaining open question from Issue #2001:
 
 The agent that created this PR is the external party whose workflow depends on
 ContinuityOS. Merge Guard running `VALID` on this PR is the dependency signal.
+
+**Observed:** `continuity-merge-guard` ran on this PR (run `27588430806`),
+produced `conclusion: success`, and uploaded `MERGE_GUARD_PROOF` (artifact
+`7655437395`). The PR is mergeable.
 
 ---
 
@@ -99,19 +115,6 @@ This satisfies the acceptance criterion from Issue #2001:
 
 ---
 
-## Closure condition
-
-This document's classification advances from `DEPENDENCY_LOOP_CANDIDATE` to
-`EXTERNAL_DEPENDENCY_LOOP_CLOSED` when:
-
-1. The `merge-guard` check on this PR produces `result: VALID`
-2. `MERGE_GUARD_PROOF.json` is uploaded as a CI artifact
-3. GitHub reports this PR as mergeable (required check green)
-
-The proof artifact link and check run URL are the observable evidence.
-
----
-
 ## Relationship to ContinuityOS Issue #2001
 
 > External dependency proof: make ContinuityOS required for one agent-authored
@@ -121,26 +124,15 @@ This PR is that workflow instance.
 
 Acceptance criteria mapping:
 
-| Criterion | Evidence |
-|-----------|----------|
-| Identify the repo/workflow | `continuityos-sandbox`, this PR |
-| PR classified as agent-authored | This document; agent performed all GitHub ops |
-| ContinuityOS / Merge Guard check runs | `merge-guard` is a required check on `main` |
-| VALID path shows merge eligibility | `MERGE_GUARD_PROOF.json` artifact on this PR |
-| NULL or failing path shows blockage | `NULL_ENFORCEMENT_PROOF.md` (PR #9, `BLOCKED_NULL_CONFIRMED`) |
-| Proof artifact captured and linked | `MERGE_GUARD_PROOF.json` uploaded by CI |
-| Dependency-proof report | This document + `EXTERNAL_DEPENDENCY_PROOF.md` (Loop 6) |
-| ContinuityOS removal degrades workflow | Counterfactual documented above |
+| Criterion | Status | Evidence |
+|-----------|--------|----------|
+| Identify the repo/workflow | CLOSED | `continuityos-sandbox`, PR #18 |
+| PR classified as agent-authored | CLOSED | This document; agent performed all GitHub ops |
+| ContinuityOS / Merge Guard check runs | CLOSED | Run `27588430806`, conclusion `success` |
+| VALID path shows merge eligibility | CLOSED | `MERGE_GUARD_PROOF` artifact `7655437395` |
+| NULL or failing path shows blockage | CLOSED | `NULL_ENFORCEMENT_PROOF.md` (PR #9, `BLOCKED_NULL_CONFIRMED`) |
+| Proof artifact captured and linked | CLOSED | Artifact `7655437395`, digest above |
+| Dependency-proof report | CLOSED | This document + `EXTERNAL_DEPENDENCY_PROOF.md` (Loop 6) |
+| ContinuityOS removal degrades workflow | CLOSED | Counterfactual documented above |
 
----
-
-## Status update path
-
-After this PR's `merge-guard` check produces `VALID`:
-
-```text
-DEPENDENCY_LOOP_CANDIDATE  →  EXTERNAL_DEPENDENCY_LOOP_CLOSED
-```
-
-The classification update will be committed as a follow-on change, referencing
-the observable proof artifact (check run URL + `MERGE_GUARD_PROOF.json` hash).
+**All Issue #2001 acceptance criteria: CLOSED.**
