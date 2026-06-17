@@ -38,28 +38,36 @@ WITHOUT attribution (remove ContinuityOS action):
 
 Removal degrades the workflow. The dependency is load-bearing.
 
-## Evidence
+## Evidence (live CI, both paths)
 
-| Path | PR | head ref | classification | gate run | conclusion |
-|------|----|----|------|------|------|
-| PASS | (this PR) | `claude/continuityos-workflow-topology-1rcgfa` | AGENT_AUTHORED | _pending_ | _pending_ |
-| FAIL | _pending_ | `claude/...` (no trailer) | UNKNOWN | _pending_ | _pending_ |
+| Path | PR | head ref | classification | status | gate run | conclusion |
+|------|----|----|------|------|------|------|
+| PASS | [#19](https://github.com/joselunasrt8-creator/continuityos-sandbox/pull/19) | `claude/continuityos-workflow-topology-1rcgfa` | `AGENT_AUTHORED` | `identity_present` | [27659873583](https://github.com/joselunasrt8-creator/continuityos-sandbox/actions/runs/27659873583) | **success** |
+| FAIL | [#20](https://github.com/joselunasrt8-creator/continuityos-sandbox/pull/20) | `claude/attribution-gate-fail-demo` | `UNKNOWN` | `identity_missing` | [27661985497](https://github.com/joselunasrt8-creator/continuityos-sandbox/actions/runs/27661985497) | **failure** |
 
-Evidence rows are filled in from the live `agent-attribution-gate` check runs.
+Key observation: in the FAIL case the existing identity-only `merge-guard` check
+still reported **success** - only `agent-attribution-gate` failed. The
+attribution classification is therefore the *sole* discriminator of the
+agent-lane merge outcome.
 
 ## Required-check status
 
 To make the gate formally load-bearing, `agent-attribution-gate` must be added as
 a **required** status check on `main` (repository-admin action, the same class as
 the original `merge-guard` required-check setup documented in
-`LOAD_BEARING_READINESS.md`).
+`LOAD_BEARING_READINESS.md`). Once required, the FAIL PR (#20) reports `blocked` /
+not mergeable, while the PASS PR (#19) is mergeable.
 
 ## Classification
 
 ```
-ATTRIBUTION_GATE_IMPLEMENTED        <-- this PR (consumer enforces AGENT_AUTHORED)
-ATTRIBUTION_PASS_DEMONSTRATED       -- this PR's own gate run (AGENT_AUTHORED -> success)
-ATTRIBUTION_FAIL_DEMONSTRATED       -- pending no-trailer demo PR (UNKNOWN -> failure)
-ATTRIBUTION_REQUIRED_CHECK_ACTIVE   -- pending repo-admin (add required check)
-ATTRIBUTION_ENFORCEMENT_CONFIRMED   -- once required + both paths shown
+ATTRIBUTION_GATE_IMPLEMENTED        DONE  (PR #19 merged: consumer enforces AGENT_AUTHORED)
+ATTRIBUTION_PASS_DEMONSTRATED       DONE  (PR #19 run 27659873583: AGENT_AUTHORED -> success)
+ATTRIBUTION_FAIL_DEMONSTRATED       DONE  (PR #20 run 27661985497: UNKNOWN -> failure)
+ATTRIBUTION_REQUIRED_CHECK_ACTIVE   PENDING repo-admin (add agent-attribution-gate as required check)
+ATTRIBUTION_ENFORCEMENT_CONFIRMED   PENDING required-check activation
 ```
+
+With the gate implemented and both paths demonstrated in live CI, the capability
+is proven load-bearing in mechanism; marking it a *required* check is the final
+repo-admin step that converts it from demonstrated to enforced.
