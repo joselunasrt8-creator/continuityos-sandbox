@@ -52,11 +52,29 @@ agent-lane merge outcome.
 
 ## Required-check status
 
-To make the gate formally load-bearing, `agent-attribution-gate` must be added as
-a **required** status check on `main` (repository-admin action, the same class as
-the original `merge-guard` required-check setup documented in
-`LOAD_BEARING_READINESS.md`). Once required, the FAIL PR (#20) reports `blocked` /
-not mergeable, while the PASS PR (#19) is mergeable.
+`agent-attribution-gate` is now a **required** status check on `main`
+(repository-admin action, the same class as the original `merge-guard`
+required-check setup documented in `LOAD_BEARING_READINESS.md`). With the
+requirement active, an agent-lane PR that is not attributed `AGENT_AUTHORED`
+reports `blocked` / not mergeable, not merely a failing check.
+
+### Live confirmation on a single PR (the load-bearing counterfactual)
+
+PR [#24](https://github.com/joselunasrt8-creator/continuityos-sandbox/pull/24)
+(head `claude/continuityos-dependency-audit-9a6thh`, an agent lane) exercised
+both states on the **same branch**, with the attribution signal as the *only*
+variable:
+
+| Run | head SHA | classification | status | `agent-attribution-gate` |
+|-----|----------|----------------|--------|--------------------------|
+| before `Agent-Authored-By:` trailer | `7909331` | `UNKNOWN` | `identity_missing` | **failure → blocked** |
+| after `Agent-Authored-By:` trailer | `cd3dfd2` | `AGENT_AUTHORED` | `identity_present` | **success → mergeable** |
+
+`merge-guard` reported **success in both runs** — PR identity was always complete.
+The attribution classification alone flipped merge eligibility, then the PR
+merged. Removing the ContinuityOS action would remove that classification, so the
+gate could no longer distinguish `AGENT_AUTHORED` from `UNKNOWN`: the dependency
+is load-bearing and now enforced.
 
 ## Classification
 
@@ -64,10 +82,16 @@ not mergeable, while the PASS PR (#19) is mergeable.
 ATTRIBUTION_GATE_IMPLEMENTED        DONE  (PR #19 merged: consumer enforces AGENT_AUTHORED)
 ATTRIBUTION_PASS_DEMONSTRATED       DONE  (PR #19 run 27659873583: AGENT_AUTHORED -> success)
 ATTRIBUTION_FAIL_DEMONSTRATED       DONE  (PR #20 run 27661985497: UNKNOWN -> failure)
-ATTRIBUTION_REQUIRED_CHECK_ACTIVE   PENDING repo-admin (add agent-attribution-gate as required check)
-ATTRIBUTION_ENFORCEMENT_CONFIRMED   PENDING required-check activation
+ATTRIBUTION_REQUIRED_CHECK_ACTIVE   DONE  (agent-attribution-gate is a required check on main)
+ATTRIBUTION_ENFORCEMENT_CONFIRMED   DONE  (PR #24: same branch, UNKNOWN->blocked then AGENT_AUTHORED->merged)
 ```
 
-With the gate implemented and both paths demonstrated in live CI, the capability
-is proven load-bearing in mechanism; marking it a *required* check is the final
-repo-admin step that converts it from demonstrated to enforced.
+The gate is implemented, both paths are demonstrated in live CI, and the
+required-check activation has converted it from demonstrated to **enforced**: an
+agent-lane PR's merge eligibility on `main` now depends on the ContinuityOS
+attribution classification.
+
+> Scope note: this is enforcement across repositories under a single owner. It
+> proves the gate is genuinely load-bearing, not yet that an *independent*
+> maintainer adopts and retains it — that ownership-boundary crossing remains the
+> open question.
