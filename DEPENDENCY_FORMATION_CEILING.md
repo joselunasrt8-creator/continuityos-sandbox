@@ -166,3 +166,13 @@ was built, any workflow ran, any check passed or failed, or any dependency was
 formed. No proof was fabricated. The current ContinuityOS consumable surface
 supports Demonstration and Cross-Repo evidence; it does not support Independent
 Continuity Dependency Proof.
+
+## Attribution
+
+This document and its branch are agent-authored on the ContinuityOS agent lane
+(`claude/**`). The authoritative `AGENT_AUTHORED` signal is carried as an
+`Agent-Authored-By:` commit trailer so the consumer's
+`continuity-agent-attribution-gate` classifies this PR correctly and the
+fail-closed agent-lane check passes. Note: this attribution gate is itself a
+*stateless* consumer of the Merge Guard attribution output — a local trailer
+grep reproduces it — so it does not change the ceiling finding above.
